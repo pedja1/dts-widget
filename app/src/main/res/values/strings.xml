@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">DTS Widget</string>
+    <string name="device_admin">DTS Widget</string>
+    <string name="device_admin_description">DTW Widget</string>
+</resources>
