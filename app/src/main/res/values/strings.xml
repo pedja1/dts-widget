@@ -2,4 +2,9 @@
     <string name="app_name">DTS Widget</string>
     <string name="device_admin">DTS Widget</string>
     <string name="device_admin_description">DTW Widget</string>
+    <string name="info">In order for this widget to work, you need to enable id as device administrator.</string>
+    <string name="enable_admin">Enable Device Administrator</string>
+    <string name="not_enabled">Not Enabled</string>
+    <string name="enabled">Enabled</string>
+    <string name="device_admin_not_enabled">Device Administrator not enabled.</string>
 </resources>

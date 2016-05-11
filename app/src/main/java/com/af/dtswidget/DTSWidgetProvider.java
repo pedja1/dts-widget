@@ -1,12 +1,14 @@
 package com.af.dtswidget;
 
 import android.app.PendingIntent;
-import android.app.admin.DevicePolicyManager;
+import android.app.admin.*;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import java.util.HashMap;
@@ -18,22 +20,37 @@ public class DTSWidgetProvider extends AppWidgetProvider
 
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds)
     {
-        final int N = appWidgetIds.length;
-
         // Perform this loop procedure for each App Widget that belongs to this provider
-        for (int i = 0; i < N; i++)
+        DevicePolicyManager dpm = (DevicePolicyManager)context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+        ComponentName deviceAdmin = new ComponentName(context, DTSDeviceAdminReceiver.class);
+        for (int appWidgetId : appWidgetIds)
         {
-            int appWidgetId = appWidgetIds[i];
-
-            // Create an Intent to launch ExampleActivity
-            Intent intent = new Intent(context, ClickCounterReceiver.class);
-            intent.putExtra("wid", appWidgetId);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            // Get the layout for the App Widget and attach an on-click listener
-            // to the button
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
-            views.setOnClickPendingIntent(R.id.root, pendingIntent);
+
+            if(dpm.isAdminActive(deviceAdmin))
+            {
+                // Create an Intent to launch count click
+                Intent intent = new Intent(context, ClickCounterReceiver.class);
+                intent.putExtra("wid", appWidgetId);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                // Get the layout for the App Widget and attach an on-click listener
+                // to the button
+                views.setOnClickPendingIntent(R.id.root, pendingIntent);
+
+                views.setInt(R.id.root, "setBackgroundColor", context.getResources().getColor(android.R.color.transparent));
+                views.setInt(R.id.tvWarning, "setVisibility", View.GONE);
+            }
+            else
+            {
+                Intent intent = new Intent(context, WidgetConfigureActivity.class);
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                views.setOnClickPendingIntent(R.id.root, pendingIntent);
+
+                views.setInt(R.id.root, "setBackgroundColor", context.getResources().getColor(android.R.color.black));
+                views.setInt(R.id.tvWarning, "setVisibility", View.VISIBLE);
+            }
 
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);

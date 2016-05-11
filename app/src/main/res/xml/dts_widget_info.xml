@@ -3,5 +3,6 @@
                     android:minHeight="40dp"
                     android:minResizeWidth="40dp"
                     android:updatePeriodMillis="0"
-                    android:resizeMode="horizontal|vertical">
+                    android:resizeMode="horizontal|vertical"
+                    android:configure="com.af.dtswidget.WidgetConfigureActivity" >
 </appwidget-provider>
